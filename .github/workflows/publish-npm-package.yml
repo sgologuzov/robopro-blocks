@@ -158,7 +158,7 @@ jobs:
           npm run prepublish
           npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: JS-DevTools/npm-publish@v1
         with:
