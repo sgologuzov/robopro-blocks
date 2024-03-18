@@ -53,7 +53,7 @@ function test_fieldnumber_constructor() {
     /* min */ -128,
     /* max */ 127,
     /* precision */ 1);
-  // Unlike blockly and scratch-blocks, openblock-blocks doesn't store recision,
+  // Unlike blockly and scratch-blocks, robopro-blocks doesn't store recision,
   // but store min and max
   assertEquals(field.getValue(), '0');
   assertEquals(field.min_, -128);

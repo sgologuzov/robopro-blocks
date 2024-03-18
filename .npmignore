@@ -26,4 +26,4 @@ common.pyc
 /LICENSE.chromedriver
 
 # Exclude already built packages from testing with npm pack
-/openblock-blocks-*.{tar,tgz}
+/robopro-blocks-*.{tar,tgz}
