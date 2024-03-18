@@ -101,11 +101,11 @@ jobs:
       #     export TX_TOKEN=${{ secrets.TX_TOKEN }}
       #     npm run translate
       #     npm run translate:update
-      - name: Pull translations
-        run: |
-          export TX_TOKEN=${{ secrets.TX_TOKEN }}
-          npm run translate
-          npm run translate:sync:translations
+      #- name: Pull translations
+      #  run: |
+      #    export TX_TOKEN=${{ secrets.TX_TOKEN }}
+      #    npm run translate
+      #    npm run translate:sync:translations
 
       - uses: nanasess/setup-chromedriver@v2
         with:
@@ -125,15 +125,15 @@ jobs:
         run: |
           echo ::set-output name=modified::$(if [ -n "$(git status --porcelain)" ] && [ "$(git status --porcelain)" != " M package-lock.json" ]; then echo "true"; else echo "false"; fi)
 
-      - name: Commit translations
-        if: ${{ steps.git-check.outputs.modified == 'true' }}
-        run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@github.com
-          git add .
-          git commit -m '[skip ci] Update translations from transifex'
-          git remote add origin-translation https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git push --set-upstream origin-translation main
+      #- name: Commit translations
+      #  if: ${{ steps.git-check.outputs.modified == 'true' }}
+      #  run: |
+      #    git config --global user.name github-actions
+      #    git config --global user.email github-actions@github.com
+      #    git add .
+      #    git commit -m '[skip ci] Update translations from transifex'
+      #    git remote add origin-translation https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      #    git push --set-upstream origin-translation main
 
       - name: Get package main version
         id: package-version
