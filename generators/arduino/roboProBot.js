@@ -29,46 +29,49 @@ const Direction = {
 
 Blockly.Arduino['arduino_roboProBot_motorsOnForSeconds'] = function(block) {
   setupMotors();
-  // Numeric value.
-  var delay = parseFloat(block.getFieldValue('SECONDS'));
-  if (isNaN(delay)) {
-    delay = 0;
-  }
-  var code = "//Включение моторов на " + delay + " секунд\n_motorsOn();\ndelay(" + delay * 1000 + ");";
+  var arg0 = Blockly.Arduino.valueToCode(block, 'SECONDS',
+    Blockly.Arduino.ORDER_UNARY_POSTFIX);
+  var code = "//Включение моторов на " + arg0 + " секунд\n"
+  code += "_motorsOn();\n"
+  code += "delay(" + arg0 + " * 1000" + ");\n";
+  console.log("[arduino_roboProBot_motorsOnForSeconds] code:", code);
   return code;
 };
 
 Blockly.Arduino['arduino_roboProBot_motorsOn'] = function(block) {
   setupMotors();
-  var code = "//Включение моторов\n_motorsOn();";
+  var code = "//Включение моторов\n_motorsOn();\n";
   return code;
 };
 
 Blockly.Arduino['arduino_roboProBot_motorsOff'] = function(block) {
   setupMotors();
-  var code = "//Выключение моторов\n_motorsOff();";
+  var code = "//Выключение моторов\n_motorsOff();\n";
   return code;
 };
 
 Blockly.Arduino['arduino_roboProBot_setDirectionTo'] = function(block) {
+  console.log("[arduino_roboProBot_setDirectionTo] block:", block);
+  console.log("[arduino_roboProBot_setDirectionTo] field:", block.getField('DIRECTION'));
+  console.log("[arduino_roboProBot_setDirectionTo] value:", block.getFieldValue('DIRECTION'));
   var arg0 = block.getFieldValue('DIRECTION') || Direction.Forward;
   var code = "//Установка направления движения " + arg0 + "\n";
   switch (arg0) {
     case Direction.Forward:
       code += "leftMotor.reverse = false;\n";
-      code += "rightMotor.reverse = false;";
+      code += "rightMotor.reverse = false;\n";
       break;
     case Direction.Backward:
       code += "leftMotor.reverse = true;\n";
-      code += "rightMotor.reverse = true;";
+      code += "rightMotor.reverse = true;\n";
       break;
     case Direction.TurnLeft:
       code += "leftMotor.reverse = true;\n";
-      code += "rightMotor.reverse = false;";
+      code += "rightMotor.reverse = false;\n";
       break;
     case Direction.TurnRight:
       code += "leftMotor.reverse = false;\n";
-      code += "rightMotor.reverse = true;";
+      code += "rightMotor.reverse = true;\n";
       break;
   }
   return code;
