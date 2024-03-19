@@ -29,27 +29,30 @@ const Direction = {
 
 Blockly.Arduino['arduino_roboProBot_motorsOnForSeconds'] = function(block) {
   setupMotors();
-  var delaySeconds = parseInt(block.getFieldValue('SECONDS')) || 0;
-  var delayMillis = delaySeconds * 1000;
-  var code = `//Включение моторов на ${delaySeconds} секунд\n_motorsOn();\ndelay(${delayMillis});\n`;
+  // Numeric value.
+  var delay = parseFloat(block.getFieldValue('SECONDS'));
+  if (isNaN(delay)) {
+    delay = 0;
+  }
+  var code = "//Включение моторов на " + delay + " секунд\n_motorsOn();\ndelay(" + delay * 1000 + ");";
   return code;
 };
 
 Blockly.Arduino['arduino_roboProBot_motorsOn'] = function(block) {
   setupMotors();
-  var code = "//Включение моторов\n_motorsOn();\n";
+  var code = "//Включение моторов\n_motorsOn();";
   return code;
 };
 
 Blockly.Arduino['arduino_roboProBot_motorsOff'] = function(block) {
   setupMotors();
-  var code = "//Выключение моторов\n_motorsOff();\n";
+  var code = "//Выключение моторов\n_motorsOff();";
   return code;
 };
 
 Blockly.Arduino['arduino_roboProBot_setDirectionTo'] = function(block) {
   var arg0 = block.getFieldValue('DIRECTION') || Direction.Forward;
-  var code = `//Установка направления движения ${arg0}\n`;
+  var code = "//Установка направления движения " + arg0 + "\n";
   switch (arg0) {
     case Direction.Forward:
       code += "leftMotor.reverse = false;\n";
