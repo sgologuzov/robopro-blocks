@@ -1,13 +1,14 @@
 {
   "name": "robopro-blocks",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RoboPro Blocks is a library for building creative computing interfaces.",
   "author": "Massachusetts Institute of Technology",
   "license": "Apache-2.0",
   "homepage": "https://github.com/sgologuzov/robopro-blocks#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sgologuzov/robopro-blocks.git"
+    "url": "https://github.com/sgologuzov/robopro-blocks.git",
+    "sha": "d58fc02c35335d537c6168e35909d63acad38402"
   },
   "main": "./dist/vertical.js",
   "browser": "./shim/vertical.js",
