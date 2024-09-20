@@ -23,8 +23,8 @@ if (!process.env.TX_TOKEN || process.argv.length !== 2) {
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
-const locales = require('openblock-l10n').default;
-const {txPull} = require('openblock-l10n/lib/transifex.js');
+const locales = require('robopro-l10n').default;
+const {txPull} = require('robopro-l10n/lib/transifex.js');
 
 // Globals
 const PATH_OUTPUT = path.resolve(__dirname, '../msg');
