@@ -50,8 +50,7 @@
         "no-constant-condition": ["off"]
     },
     "env": {
-        "browser": true,
-        "es6": true
+        "browser": true
     },
     "globals": {
         "Blockly": true, # Blockly global

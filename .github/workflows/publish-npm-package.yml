@@ -46,12 +46,11 @@ jobs:
 
       - run: npm ci
 
-      - uses: nanasess/setup-chromedriver@v2
-        with:
-          chromedriver-version: '122.0.6261.111'
-
       - name: Set test env
         run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
+          npm install --save-dev chromedriver@$CHROME_MAJOR_VERSION
           export DISPLAY=:99.0
           tests/scripts/setup_linux_env.sh
           sleep 2
@@ -95,24 +94,23 @@ jobs:
       - name: Update robopro-l10n
         run: npm i --save robopro-l10n@latest
 
-      # Don't push translations to TX, just pull, The push step will be run by the enterprise edition repository.
+      # Don't push translations to TX, just pull, The push step will be run by the distro repository.
       # - name: Sync translations
       #   run: |
       #     export TX_TOKEN=${{ secrets.TX_TOKEN }}
       #     npm run translate
       #     npm run translate:update
-      #- name: Pull translations
-      #  run: |
-      #    export TX_TOKEN=${{ secrets.TX_TOKEN }}
-      #    npm run translate
-      #    npm run translate:sync:translations
-
-      - uses: nanasess/setup-chromedriver@v2
-        with:
-          chromedriver-version: '122.0.6261.111'
+      - name: Pull translations
+        run: |
+          export TX_TOKEN=${{ secrets.TX_TOKEN }}
+          npm run translate
+          npm run translate:sync:translations
 
       - name: Set test env
         run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
+          npm install --save-dev chromedriver@$CHROME_MAJOR_VERSION
           export DISPLAY=:99.0
           tests/scripts/setup_linux_env.sh
           sleep 2
@@ -125,15 +123,15 @@ jobs:
         run: |
           echo ::set-output name=modified::$(if [ -n "$(git status --porcelain)" ] && [ "$(git status --porcelain)" != " M package-lock.json" ]; then echo "true"; else echo "false"; fi)
 
-      #- name: Commit translations
-      #  if: ${{ steps.git-check.outputs.modified == 'true' }}
-      #  run: |
-      #    git config --global user.name github-actions
-      #    git config --global user.email github-actions@github.com
-      #    git add .
-      #    git commit -m '[skip ci] Update translations from transifex'
-      #    git remote add origin-translation https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/$GITHUB_REPOSITORY
-      #    git push --set-upstream origin-translation main
+      - name: Commit translations
+        if: ${{ steps.git-check.outputs.modified == 'true' }}
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+          git add .
+          git commit -m '[skip ci] Update translations from transifex'
+          git remote add origin-translation https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git push --set-upstream origin-translation main
 
       - name: Get package main version
         id: package-version
@@ -158,7 +156,7 @@ jobs:
           npm run prepublish
           npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - uses: JS-DevTools/npm-publish@v1
         with:
