@@ -92,8 +92,8 @@ jobs:
 
       - run: npm ci
 
-      - name: Update openblock-l10n
-        run: npm i --save openblock-l10n@latest
+      - name: Update robopro-l10n
+        run: npm i --save robopro-l10n@latest
 
       # Don't push translations to TX, just pull, The push step will be run by the enterprise edition repository.
       # - name: Sync translations
