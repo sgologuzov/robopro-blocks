@@ -478,7 +478,7 @@ class Gen_compressed(threading.Thread):
       compiledCode = json_data["compiledCode"].decode("utf-8")
 
       if (compiledCode.find("new Blockly.Generator") != -1):
-        code = HEADER + "\nlet Blockly = require(\'openblock-blocks\');\n\n" + compiledCode
+        code = HEADER + "\nlet Blockly = require(\'robopro-blocks\');\n\n" + compiledCode
       else:
         code = HEADER + "\n" + compiledCode
 
