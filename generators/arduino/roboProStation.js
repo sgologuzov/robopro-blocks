@@ -19,6 +19,11 @@ Blockly.Arduino.ROBO_PRO_STATION_PINS_MAP = {
 // readDigitalPin
 // setDigitalOutput
 // setPwmOutput
+// setIndicatorBrightness
+// setIndicatorDigitValue
+// turnIndicatorSeparator
+// turnIndicator
+// setIndicatorValue
 
 Blockly.Arduino['arduino_roboProStation_ledPixelTurn'] = function(block) {
   Blockly.Arduino.setupLEDStrip_();
@@ -66,16 +71,6 @@ Blockly.Arduino['arduino_roboProStation_colorLedTurn'] = function(block) {
     code += "digitalWrite(" + arg0 + ", HIGH);\n";
   }
   return code;
-};
-
-Blockly.Arduino['arduino_roboProStation_menu_leds'] = function(block) {
-  var code = block.getFieldValue('LED_INDEX') || '0';
-  return [code, Blockly.Arduino.ORDER_ATOMIC];
-};
-
-Blockly.Arduino['arduino_roboProStation_menu_colorLeds'] = function(block) {
-  var code = block.getFieldValue('LED_PIN') || Blockly.Arduino.ROBO_PRO_STATION_PINS_MAP.RedLED;
-  return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
 Blockly.Arduino['arduino_roboProStation_playNoteForBeats'] = function(block) {
@@ -135,6 +130,72 @@ Blockly.Arduino['arduino_roboProStation_setPwmOutput'] = function(block) {
   return code;
 };
 
+Blockly.Arduino['arduino_roboProStation_setIndicatorBrightness'] = function(block) {
+  Blockly.Arduino.setupIndicator_();
+  var arg0 = block.getFieldValue('VALUE') || '3';
+  var code = `display.brightness(${arg0});\n`;
+  return code;
+}
+
+Blockly.Arduino['arduino_roboProStation_setIndicatorDigitValue'] = function(block) {
+  Blockly.Arduino.setupIndicator_();
+  var arg0 = Blockly.Arduino.valueToCode(block, 'DIGIT', Blockly.Arduino.ORDER_UNARY_POSTFIX);
+  var arg1 = Blockly.Arduino.valueToCode(block, 'VALUE', Blockly.Arduino.ORDER_UNARY_POSTFIX);
+
+  var code = `display.setCursor(${arg0});\n`
+  code += `display.print("${arg1.replace("°", "*")}");\n`
+  code += `display.update();\n`;
+  return code;
+}
+
+Blockly.Arduino['arduino_roboProStation_turnIndicatorSeparator'] = function(block) {
+  Blockly.Arduino.setupIndicator_();
+  var arg0 = block.getFieldValue('VALUE') || 'on';
+
+  var code = `display.colon(${(arg0 === 'on')});\n`
+  code += `display.update();\n`;
+  return code;
+}
+
+Blockly.Arduino['arduino_roboProStation_turnIndicator'] = function(block) {
+  Blockly.Arduino.setupIndicator_();
+  var arg0 = block.getFieldValue('VALUE') || 'on';
+
+  var code = `display.power(${(arg0 === 'on')});\n`
+  code += `display.update();\n`;
+  return code;
+}
+
+Blockly.Arduino['arduino_roboProStation_setIndicatorValue'] = function(block) {
+  Blockly.Arduino.setupIndicator_();
+  var arg0 = Blockly.Arduino.valueToCode(block, 'VALUE', Blockly.Arduino.ORDER_UNARY_POSTFIX) || '';
+
+  var code = `display.print(${arg0.replace("°", "*")});\n`
+  code += `display.update();\n`;
+  return code;
+}
+
+// Меню
+Blockly.Arduino['arduino_roboProStation_menu_leds'] = function(block) {
+  var code = block.getFieldValue('leds') || '0';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino['arduino_roboProStation_menu_colorLeds'] = function(block) {
+  var code = block.getFieldValue('LED_PIN') || Blockly.Arduino.ROBO_PRO_STATION_PINS_MAP.RedLED;
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino['arduino_roboProStation_menu_indicatorDigits'] = function(block) {
+  var code = block.getFieldValue('indicatorDigits') || '0';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino['arduino_roboProStation_menu_indicatorValues'] = function(block) {
+  var code = block.getFieldValue('indicatorValues') || '';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
 Blockly.Arduino.adjustColor_ = function(hexcolor) {
   // If a three-character hexcolor, make six-character
   if (hexcolor.length === 3 || hexcolor.length === 4) {
@@ -160,3 +221,11 @@ CRGB leds[LED_STRIP_NUM_LEDS]; // Создаем экземпляр ленты �
   FastLED.addLeds<NEOPIXEL, LED_STRIP_DATA_PIN>(leds, LED_STRIP_NUM_LEDS); // Указываем куда подключена лента
   FastLED.setBrightness(32); // Задаем яркость ленты, от 0 до 255`;
 };
+
+Blockly.Arduino.setupIndicator_ = function() {
+  Blockly.Arduino.includes_['INDICATOR'] = `#include <GyverSegment.h> // Библиотека для работы с семисегментным индикатором`;
+  Blockly.Arduino.definitions_['INDICATOR'] = `#define CLK_PIN 4 // Пин CLK
+#define DIO_PIN 2 // Пин DIO
+
+Disp1637Colon display(DIO_PIN, CLK_PIN);`
+}
