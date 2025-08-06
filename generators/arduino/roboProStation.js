@@ -87,13 +87,20 @@ Blockly.Arduino['arduino_roboProStation_playNoteForBeats'] = function(block) {
 };
 
 Blockly.Arduino['arduino_roboProStation_readSensor'] = function(block) {
+  Blockly.Arduino.setupSensorPins_();
   Blockly.Arduino.setupSensors_();
   var arg0 = block.getFieldValue('PIN') || 'A1';
-  var code = `_mapSensorValue(${arg0}, analogRead(${arg0}))`;
+  var code;
+  if (arg0 === 'A0') {
+    code = `_readTemperature();`
+  } else {
+    code = `_mapSensorValue(${arg0}, analogRead(${arg0}))`;
+  }
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
 Blockly.Arduino['arduino_roboProStation_readButton'] = function(block) {
+  Blockly.Arduino.setupDigitalInputPins_();
   var arg0 = block.getFieldValue('PIN') || '0';
   var code = "digitalRead(" + arg0 + ")";
   return [code, Blockly.Arduino.ORDER_ATOMIC];
@@ -106,6 +113,7 @@ Blockly.Arduino['arduino_roboProStation_readAnalogSensor'] = function(block) {
 };
 
 Blockly.Arduino['arduino_roboProStation_readDigitalPin'] = function(block) {
+  Blockly.Arduino.setupDigitalInputPins_();
   var arg0 = block.getFieldValue('PIN') || '0';
   var code = "digitalRead(" + arg0 + ")";
   return [code, Blockly.Arduino.ORDER_ATOMIC];
@@ -116,11 +124,6 @@ Blockly.Arduino['arduino_roboProStation_setDigitalOutput'] = function(block) {
   var arg1 = Blockly.Arduino.valueToCode(block, 'LEVEL', Blockly.Arduino.ORDER_UNARY_POSTFIX) || 'LOW';
   var code = "digitalWrite(" + arg0 + ", " + arg1 + ");\n";
   return code;
-};
-
-Blockly.Arduino['arduino_roboProStation_menu_level'] = function(block) {
-  var code = block.getFieldValue('level') || 'LOW';
-  return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
 Blockly.Arduino['arduino_roboProStation_setPwmOutput'] = function(block) {
@@ -176,6 +179,11 @@ Blockly.Arduino['arduino_roboProStation_setIndicatorValue'] = function(block) {
 }
 
 // Меню
+Blockly.Arduino['arduino_roboProStation_menu_level'] = function(block) {
+  var code = block.getFieldValue('level') || 'LOW';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
 Blockly.Arduino['arduino_roboProStation_menu_leds'] = function(block) {
   var code = block.getFieldValue('leds') || '0';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
@@ -207,6 +215,39 @@ Blockly.Arduino.adjustColor_ = function(hexcolor) {
     }).join('');
   }
   return hexcolor.toUpperCase();
+}
+
+Blockly.Arduino.setupSensorPins_ = function() {
+  Blockly.Arduino.includes_['SENSOR_PINS'] = `#include <OneWire.h> // Библиотека для шины 1W
+#include <DallasTemperature.h> // Библиотека для ds18b20`;
+  Blockly.Arduino.definitions_['SENSOR_PINS'] = `#define TEMP_SENSOR_PIN A0 // Пин, к которому подключен датчик температуры
+#define SOUND_SENSOR_PIN A3 // Пин, к которому подключен микрофон
+#define LIGHT_SENSOR_PIN A4 // Пин, к которому подключен датчик света
+
+OneWire oneWire(TEMP_SENSOR_PIN); // Создаем экземпляр шины W1 и указываем что он подключен к пину TEMP_SENSOR_PIN
+DallasTemperature sensors(&oneWire); // Создаем экземпляр датчика температуры и передаем в него W1
+`
+  Blockly.Arduino.setups_['SENSOR_PINS'] = `sensors.begin(); // Инициализируем датчик температуры`
+
+  Blockly.Arduino.customFunctions_['_readTemperature'] = `float _readTemperature() {
+    sensors.requestTemperatures(); // Даем команду датчику на измерение температуры, это занимает около одной секунды
+    return sensors.getTempCByIndex(0);
+}\n`;
+}
+
+Blockly.Arduino.setupDigitalInputPins_ = function() {
+  Blockly.Arduino.definitions_['PINS'] = `#define BUTTON_1_PIN 8 // Пин, к которому подключена кнопка 1
+#define BUTTON_2_PIN 9 // Пин, к которому подключена кнопка 1
+#define BUTTON_3_PIN 10 // Пин, к которому подключена кнопка 1
+#define BUTTON_4_PIN 11 // Пин, к которому подключена кнопка 1
+#define BUTTON_5_PIN 12 // Пин, к которому подключена кнопка 1`
+
+  Blockly.Arduino.setups_['PINS'] = `// Инициализация пинов датчиков
+  pinMode(BUTTON_1_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_2_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_3_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_4_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_5_PIN, INPUT_PULLUP);`
 }
 
 
