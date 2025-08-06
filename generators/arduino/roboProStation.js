@@ -92,7 +92,7 @@ Blockly.Arduino['arduino_roboProStation_readSensor'] = function(block) {
   var arg0 = block.getFieldValue('PIN') || 'A1';
   var code;
   if (arg0 === 'A0') {
-    code = `_readTemperature();`
+    code = `_readTemperature()`
   } else {
     code = `_mapSensorValue(${arg0}, analogRead(${arg0}))`;
   }
