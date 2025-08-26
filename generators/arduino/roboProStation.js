@@ -102,7 +102,7 @@ Blockly.Arduino['arduino_roboProStation_readSensor'] = function(block) {
 Blockly.Arduino['arduino_roboProStation_readButton'] = function(block) {
   Blockly.Arduino.setupDigitalInputPins_();
   var arg0 = block.getFieldValue('PIN') || '0';
-  var code = "digitalRead(" + arg0 + ")";
+  var code = "_readButton(" + arg0 + ")";
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
 
@@ -248,6 +248,16 @@ Blockly.Arduino.setupDigitalInputPins_ = function() {
   pinMode(BUTTON_3_PIN, INPUT_PULLUP);
   pinMode(BUTTON_4_PIN, INPUT_PULLUP);
   pinMode(BUTTON_5_PIN, INPUT_PULLUP);`
+
+  Blockly.Arduino.customFunctions_['PINS'] = `int _readButton(int pin) {
+    int value = digitalRead(pin);
+    if (value == 0) {
+        value = 1;
+    } else {
+        value = 0;
+    }
+    return value;
+  }\n`;
 }
 
 
