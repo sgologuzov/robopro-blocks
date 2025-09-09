@@ -4,10 +4,13 @@ goog.require('Blockly.Arduino');
 
 Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP = {
   // RoboPro
+  HeadLight: 2,
   LeftMotorReverse: 4,
   LeftMotorPwm: 5,
   RightMotorPwm: 6,
-  RightMotorReverse: 7
+  RightMotorReverse: 7,
+  LeftLight: 8,
+  RightLight: 12
 };
 
 Blockly.Arduino.Direction = {
@@ -105,6 +108,42 @@ Blockly.Arduino['arduino_roboProBot_readSensor'] = function(block) {
   var arg0 = block.getFieldValue('PIN') || 'A1';
   var code = `_mapSensorValue(${arg0}, analogRead(${arg0}))`;
   return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+Blockly.Arduino['arduino_roboProBot_headLightTurn'] = function(block) {
+  var arg0 = block.getFieldValue('VALUE') || 'off';
+  if (arg0 === 'off') {
+    var code = `//Выкючение фар\n`;
+    code += "digitalWrite(" + Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP.HeadLight + ", LOW);\n";
+  } else {
+    var code = `//Вкючение фар\n`;
+    code += "digitalWrite(" +  Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP.HeadLight + ", HIGH);\n";
+  }
+  return code;
+};
+
+Blockly.Arduino['arduino_roboProBot_leftLightTurn'] = function(block) {
+  var arg0 = block.getFieldValue('VALUE') || 'off';
+  if (arg0 === 'off') {
+    var code = `//Выкючение левого поворотника\n`;
+    code += "digitalWrite(" + Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP.LeftLight + ", LOW);\n";
+  } else {
+    var code = `//Вкючение левого поворотника\n`;
+    code += "digitalWrite(" +  Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP.LeftLight + ", HIGH);\n";
+  }
+  return code;
+};
+
+Blockly.Arduino['arduino_roboProBot_rightLightTurn'] = function(block) {
+  var arg0 = block.getFieldValue('VALUE') || 'off';
+  if (arg0 === 'off') {
+    var code = `//Выкючение правого поворотника\n`;
+    code += "digitalWrite(" + Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP.RightLight + ", LOW);\n";
+  } else {
+    var code = `//Вкючение правого поворотника\n`;
+    code += "digitalWrite(" +  Blockly.Arduino.ROBO_PRO_BOT_PINS_MAP.RightLight + ", HIGH);\n";
+  }
+  return code;
 };
 
 Blockly.Arduino.motorsOnForSeconds_ = function(seconds) {
