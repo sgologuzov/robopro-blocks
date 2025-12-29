@@ -25,7 +25,7 @@ Blockly.Arduino.ROBO_PRO_STATION_PINS_MAP = {
 // turnIndicator
 // setIndicatorValue
 
-Blockly.Arduino['arduino_roboProStation_ledPixelTurn'] = function(block) {
+Blockly.Arduino.ledPixelTurn_ = function(block) {
   Blockly.Arduino.setupLEDStrip_();
   var arg0 = Blockly.Arduino.valueToCode(block, 'LED_INDEX', Blockly.Arduino.ORDER_UNARY_POSTFIX) || '';
   var arg1 = Blockly.Arduino.valueToCode(block, 'COLOR', Blockly.Arduino.ORDER_UNARY_POSTFIX) || '#000';
@@ -43,7 +43,11 @@ Blockly.Arduino['arduino_roboProStation_ledPixelTurn'] = function(block) {
   return code;
 };
 
-Blockly.Arduino['arduino_roboProStation_ledTurn'] = function(block) {
+Blockly.Arduino['arduino_roboProStation_ledPixelTurn'] = Blockly.Arduino.ledPixelTurn_;
+Blockly.Arduino['arduino_roboProBot_ledPixelTurn'] = Blockly.Arduino.ledPixelTurn_;
+
+
+Blockly.Arduino.ledTurn_ = function(block) {
   Blockly.Arduino.setupLEDStrip_();
   var arg1 = Blockly.Arduino.valueToCode(block, 'COLOR', Blockly.Arduino.ORDER_UNARY_POSTFIX);
   var arg2 = block.getFieldValue('VALUE') || 'off';
@@ -59,6 +63,9 @@ Blockly.Arduino['arduino_roboProStation_ledTurn'] = function(block) {
   code += "FastLED.show();\n";
   return code;
 };
+
+Blockly.Arduino['arduino_roboProStation_ledTurn'] = Blockly.Arduino.ledTurn_;
+Blockly.Arduino['arduino_roboProBot_ledTurn'] = Blockly.Arduino.ledTurn_;
 
 Blockly.Arduino['arduino_roboProStation_colorLedTurn'] = function(block) {
   var arg0 = block.getFieldValue('LED_PIN') || Blockly.Arduino.ROBO_PRO_STATION_PINS_MAP.RedLED;
@@ -222,7 +229,7 @@ Blockly.Arduino.setupSensorPins_ = function() {
 #include <DallasTemperature.h> // Библиотека для ds18b20`;
   Blockly.Arduino.definitions_['SENSOR_PINS'] = `#define TEMP_SENSOR_PIN A0 // Пин, к которому подключен датчик температуры
 #define SOUND_SENSOR_PIN A3 // Пин, к которому подключен микрофон
-#define LIGHT_SENSOR_PIN A4 // Пин, к которому подключен датчик света
+#define LIGHT_SENSOR_PIN A1 // Пин, к которому подключен датчик света
 
 OneWire oneWire(TEMP_SENSOR_PIN); // Создаем экземпляр шины W1 и указываем что он подключен к пину TEMP_SENSOR_PIN
 DallasTemperature sensors(&oneWire); // Создаем экземпляр датчика температуры и передаем в него W1
@@ -236,11 +243,11 @@ DallasTemperature sensors(&oneWire); // Создаем экземпляр дат
 }
 
 Blockly.Arduino.setupDigitalInputPins_ = function() {
-  Blockly.Arduino.definitions_['PINS'] = `#define BUTTON_1_PIN 8 // Пин, к которому подключена кнопка 1
-#define BUTTON_2_PIN 9 // Пин, к которому подключена кнопка 1
-#define BUTTON_3_PIN 10 // Пин, к которому подключена кнопка 1
-#define BUTTON_4_PIN 11 // Пин, к которому подключена кнопка 1
-#define BUTTON_5_PIN 12 // Пин, к которому подключена кнопка 1`
+  Blockly.Arduino.definitions_['PINS'] = `#define BUTTON_1_PIN 9 // Пин, к которому подключена кнопка 1
+#define BUTTON_2_PIN 10 // Пин, к которому подключена кнопка 2
+#define BUTTON_3_PIN 12 // Пин, к которому подключена кнопка 3
+#define BUTTON_4_PIN 8 // Пин, к которому подключена кнопка 4
+#define BUTTON_5_PIN 11 // Пин, к которому подключена кнопка 5`
 
   Blockly.Arduino.setups_['PINS'] = `// Инициализация пинов датчиков
   pinMode(BUTTON_1_PIN, INPUT_PULLUP);
